@@ -2,6 +2,7 @@ package simulator
 
 type Machine struct {
 	registers map[registerName]register
+	memory    memory
 }
 
 func (m *Machine) Init() {

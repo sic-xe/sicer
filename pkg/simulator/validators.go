@@ -16,11 +16,6 @@ func IsByte(f float64) bool {
 }
 
 // IsAddress checks if the value is a valid SIC/XE address (20 bits).
-func IsAddress(f float64) bool {
-	return f >= 0 && f <= 2^20
-}
-
-// IsRegister checks if the value is a valid SIC/XE register (0-9, excluding 7).
-func IsRegister(f float64) bool {
-	return f >= 0 && f != 7 && f <= 9
+func IsAddress(f uint32) bool {
+	return f <= 2^20
 }

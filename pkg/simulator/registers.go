@@ -42,7 +42,7 @@ func (r *register) Value() float64 {
 }
 
 func (r *register) SetValue(v float64) error {
-	if (r.name != F && !IsWord(v)) || !IsTwoWords(v) {
+	if (r.name != F && !IsWord(v)) || !IsFloat(v) {
 		return fmt.Errorf("value %f can't fit in register %s", v, r.name)
 	}
 	r.value = v

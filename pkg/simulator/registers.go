@@ -2,59 +2,59 @@ package simulator
 
 import (
 	"fmt"
-
-	"github.com/sic-xe/sicer/pkg/common"
 )
 
-type register = int
+type registerName string
 
-var (
-	A  register = 0
-	X  register = 1
-	L  register = 2
-	B  register = 3
-	S  register = 4
-	T  register = 5
-	F  register = 6
-	PC register = 8
-	SW register = 9
+const (
+	A  registerName = "A"
+	X  registerName = "X"
+	L  registerName = "L"
+	B  registerName = "B"
+	S  registerName = "S"
+	T  registerName = "T"
+	F  registerName = "F"
+	PC registerName = "PC"
+	SW registerName = "SW"
 )
+
+type register struct {
+	name  registerName
+	value float64
+}
 
 func (m *Machine) initRegisters() {
-	m.registers = map[register]int{
-		A:  0,
-		X:  0,
-		L:  0,
-		B:  0,
-		S:  0,
-		T:  0,
-		F:  0,
-		PC: 0,
-		SW: 0,
+	m.registers = map[registerName]register{
+		A:  {name: A},
+		X:  {name: X},
+		L:  {name: L},
+		B:  {name: B},
+		S:  {name: S},
+		T:  {name: T},
+		F:  {name: F},
+		PC: {name: PC},
+		SW: {name: SW},
 	}
 }
 
-// Register returns the value of the register with the given ID.
-func (m *Machine) Register(r register) (int, error) {
-	if !common.IsRegister(r) {
-		return 0, fmt.Errorf("register with ID %d does not exist", r)
-	}
-
-	return m.registers[r], nil
+func (r *register) Value() float64 {
+	return r.value
 }
 
-// SetRegister sets the value of the register with the given ID.
-func (m *Machine) SetRegister(r register, i int) error {
-	if !common.IsRegister(r) {
-		return fmt.Errorf("register with ID %d does not exist", r)
+func (r *register) SetValue(v float64) error {
+	if (r.name != F && !IsWord(v)) || !IsTwoWords(v) {
+		return fmt.Errorf("value %f can't fit in register %s", v, r.name)
 	}
+	r.value = v
 
-	// If it's the F register it can hold two words, otherwise just one
-	if (r == 6 && !common.IsTwoWords(i)) || !common.IsWord(i) {
-		return fmt.Errorf("value %d can't fit in the register", i)
+	return nil
+}
+
+func (r *register) SetLowValue(v float64) error {
+	if !IsByte(v) {
+		return fmt.Errorf("value %f can't fit in register %s", v, r.name)
 	}
-
-	m.registers[r] = i
+	r.value = v
 
 	return nil
 }

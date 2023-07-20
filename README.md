@@ -13,7 +13,7 @@ branch.
 
 ### Simulator
 
-- [ ] Registers
+- [x] Registers
 - [ ] Memory
 - [ ] I/O devices
 - [ ] All addressing modes

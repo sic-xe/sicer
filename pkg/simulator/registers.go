@@ -4,57 +4,41 @@ import (
 	"fmt"
 )
 
-type registerName string
-
-const (
-	A  registerName = "A"
-	X  registerName = "X"
-	L  registerName = "L"
-	B  registerName = "B"
-	S  registerName = "S"
-	T  registerName = "T"
-	F  registerName = "F"
-	PC registerName = "PC"
-	SW registerName = "SW"
-)
-
-type register struct {
-	name  registerName
-	value float64
-}
-
 func (m *Machine) initRegisters() {
-	m.registers = map[registerName]register{
-		A:  {name: A},
-		X:  {name: X},
-		L:  {name: L},
-		B:  {name: B},
-		S:  {name: S},
-		T:  {name: T},
-		F:  {name: F},
-		PC: {name: PC},
-		SW: {name: SW},
+	m.Registers = map[Register]float64{
+		A:  0,
+		X:  0,
+		L:  0,
+		B:  0,
+		S:  0,
+		T:  0,
+		F:  0,
+		PC: 0,
+		SW: 0,
 	}
 }
 
-func (r *register) Value() float64 {
-	return r.value
+// Register returns the value of the register
+func (m *Machine) Register(name Register) float64 {
+	return m.Registers[name]
 }
 
-func (r *register) SetValue(v float64) error {
-	if (r.name != F && !IsWord(v)) || !IsFloat(v) {
-		return fmt.Errorf("value %f can't fit in register %s", v, r.name)
+// SetRegister sets the value of the register
+func (m *Machine) SetRegister(name Register, val float64) error {
+	if (name != F && !IsWord(val)) || !IsFloat(val) {
+		return fmt.Errorf("value %f can't fit in register %d", val, name)
 	}
-	r.value = v
 
+	m.Registers[name] = val
 	return nil
 }
 
-func (r *register) SetLowValue(v float64) error {
-	if !IsByte(v) {
-		return fmt.Errorf("value %f can't fit in register %s", v, r.name)
+// SetRegisterLow sets the lowest byte of the register
+func (m *Machine) SetRegisterLow(name Register, val float64) error {
+	if !IsByte(val) {
+		return fmt.Errorf("value %f can't fit in lowest byte of register %d", val, name)
 	}
-	r.value = v
 
+	m.Registers[name] = val
 	return nil
 }
